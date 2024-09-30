@@ -39,6 +39,7 @@ touched_while_in_delay=0  # 1 if touchpad was touched while in delay, 0 otherwis
 monitor_keys() {
     stdbuf -oL libinput debug-events | grep --line-buffered "KEYBOARD_KEY" | while read -r event; do
         #echo "k"  # Output 'k' for key press, prevent flood of errors if this device moves
+        touched_while_in_delay=1
         if [ -f "$TOUCHPAD_DEVICE" ] && [ "$(cat "$TOUCHPAD_DEVICE")" -eq 0 ]; then
             disable_touchpad
         fi
