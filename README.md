@@ -1,4 +1,4 @@
-# hackpad
+# hackpad (XPS13, 2024)
 
 I recently bought a Dell XPS13, and the touchpad has been giving me nightmares by clicking on random parts of my screen, or random places in an editor while I type.
 
