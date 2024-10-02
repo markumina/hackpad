@@ -1,0 +1,12 @@
+[Unit]
+Description=Hackpad Touchpad Management Script
+After=multi-user.target
+
+[Service]
+ExecStart=/opt/hackpad/hackpad.sh
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
+
