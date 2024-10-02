@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -x 
 
-# Path to the touchpad input device
+# Path to the touchpad input device (see README.md to get yours)
 TOUCHPAD_DEVICE="/sys/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/input17/inhibited"
 
 # Temporary file to store the state of touched_while_in_delay
