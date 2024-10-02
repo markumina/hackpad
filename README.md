@@ -10,7 +10,7 @@ I dug through all the settings that I could find in Wayland. Enabling the follow
 gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true
 ```
 
-After that, I tweaked every setting, switched from Wayland to X11 and tweaked all those settings.
+After that, I tweaked every setting, switched from Wayland to X11 and tweaked all those settings - no great results.
 
 So I stuck together a little script that has helped a lot, for me. The commands in the script are what I settled on. There were other ways to disable the trackpad, namely:
 
