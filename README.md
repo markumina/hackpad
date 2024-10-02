@@ -18,7 +18,7 @@ So I stuck together a little script that has helped a lot, for me. The commands 
 
 .. but it left the trackpad in an odd state where you had to lift your finger and put it back down again for it to start acception motion. The method that I settled on in hackpad.sh does not have that issue.
 
-The logic is bad, and I wrote it quickly after midnight. There's a small hole in it that can allow for a click once in a while while typing, bit it's a small hole. I'll fix it and this note someday - but I mainly focused on reducing CPU load and making my computer usable for now..
+After some adjustments, the logic works fine. I fixed the small fallthrough hole, and kept focus on reducing CPU load and making my computer usable for now..
 
 If you want to use this, you'll have to find your path to enabling/disabling your touchpad.
 
