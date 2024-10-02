@@ -12,11 +12,11 @@ gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true
 
 After that, I tweaked every setting, switched from Wayland to X11 and tweaked all those settings - no great results.
 
-So I stuck together a little script that has helped a lot, for me. The commands in the script are what I settled on. There were other ways to disable the trackpad, namely:
+So I stuck together a little script that has helped a lot, for me. The commands in the script are what I settled on. There were other ways to disable the touchpad, namely:
 
 ```gsettings get org.gnome.desktop.peripherals.touchpad send-events 'enabled'```
 
-.. but it left the trackpad in an odd state where you had to lift your finger and put it back down again for it to start accepting motion. The method that I settled on in hackpad.sh does not have that issue.
+.. but it left the touchpad in an odd state where you had to lift your finger and put it back down again for it to start accepting motion. The method that I settled on in hackpad.sh does not have that issue.
 
 After some adjustments, the logic works fine. I fixed the small fallthrough hole, and kept focus on reducing CPU load and making my computer usable for now..
 
