@@ -29,7 +29,7 @@ cleanup() {
 # Trap to catch all exit signals
 trap cleanup EXIT
 
-# Disable touchpad on script start
+# Enable touchpad on script start
 enable_touchpad
 
 # Initialize the touched_while_in_delay state
@@ -52,7 +52,7 @@ check_inactivity() {
     while true; do
         # If touchpad is disabled, wait some time, then check the state
         if [ -f "$TOUCHPAD_DEVICE" ] && [ "$(cat "$TOUCHPAD_DEVICE")" -eq 1 ]; then
-            sleep 0.1
+            sleep 0.1 # Main delay, post keypress.
 
             touched_while_in_delay=$(cat "$TOUCHED_FILE")  # Read the state from the file
             #echo "inactivity: $touched_while_in_delay"
@@ -64,7 +64,7 @@ check_inactivity() {
             fi
         fi
 
-        sleep 0.1
+        sleep 0.1 # Reduce CPU cycles, TBD break delays out into vars.
     done
 }
 
