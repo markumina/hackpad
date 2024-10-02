@@ -4,21 +4,23 @@
 # Path to the touchpad input device
 TOUCHPAD_DEVICE="/sys/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/input17/inhibited"
 
+# Temporary file to store the state of touched_while_in_delay
+TOUCHED_FILE="/tmp/touched_while_in_delay.txt"
+
 # Function to disable the touchpad
 disable_touchpad() {
     echo 1 > "$TOUCHPAD_DEVICE"
-    #echo "d"  # Output 'd' for disabled
 }
 
 # Function to enable the touchpad
 enable_touchpad() {
     echo 0 > "$TOUCHPAD_DEVICE"
-    #echo "e"  # Output 'e' for enabled
 }
 
 # Cleanup function to handle script exit
 cleanup() {
     enable_touchpad  # Ensure touchpad is re-enabled on exit
+    rm -f "$TOUCHED_FILE"  # Clean up the temporary file
     kill "${key_monitor_pid}" 2>/dev/null  # Kill the key monitoring thread
     kill "${inactivity_check_pid}" 2>/dev/null  # Kill the inactivity checking thread
     exit 0
@@ -30,16 +32,15 @@ trap cleanup EXIT
 # Disable touchpad on script start
 enable_touchpad
 
-# Initialize variables
-last_key_press_time=$(date +%s)
-touchpad_disabled=1  # 1 if disabled, 0 if enabled
-touched_while_in_delay=0  # 1 if touchpad was touched while in delay, 0 otherwise
+# Initialize the touched_while_in_delay state
+echo 0 > "$TOUCHED_FILE"
 
 # Thread for monitoring key presses
 monitor_keys() {
     stdbuf -oL libinput debug-events | grep --line-buffered "KEYBOARD_KEY" | while read -r event; do
-        #echo "k"  # Output 'k' for key press, prevent flood of errors if this device moves
-        touched_while_in_delay=1
+        #echo "k"  # Output 'k' for key press
+        echo 1 > "$TOUCHED_FILE"  # Set touched_while_in_delay to 1
+        #echo "mon: $(cat $TOUCHED_FILE)"  # Output the state for debugging
         if [ -f "$TOUCHPAD_DEVICE" ] && [ "$(cat "$TOUCHPAD_DEVICE")" -eq 0 ]; then
             disable_touchpad
         fi
@@ -49,19 +50,21 @@ monitor_keys() {
 # Thread for checking inactivity
 check_inactivity() {
     while true; do
-    
-    # If touchpad disabled, then wait 0.5 seconds and then turn it on, prevent flood of errors if this device moves
-    if [ -f "$TOUCHPAD_DEVICE" ] && [ "$(cat "$TOUCHPAD_DEVICE")" -eq 1 ]; then
-        sleep 1.1
-        if [ "$touched_while_in_delay" -eq 0 ]; then
-            enable_touchpad
-        else
-            #echo "t"  # Output 't' for touched while in delay
-            touched_while_in_delay=0
-        fi
-    fi
+        # If touchpad is disabled, wait 1.1 seconds, then check the state
+        if [ -f "$TOUCHPAD_DEVICE" ] && [ "$(cat "$TOUCHPAD_DEVICE")" -eq 1 ]; then
+            sleep 0.5
 
-    sleep 0.1
+            touched_while_in_delay=$(cat "$TOUCHED_FILE")  # Read the state from the file
+            #echo "inactivity: $touched_while_in_delay"
+            if [ "$touched_while_in_delay" -eq 0 ]; then
+                enable_touchpad
+            else
+                echo 0 > "$TOUCHED_FILE"  # Reset touched_while_in_delay to 0
+                #echo "t"  # Output 't' for touched
+            fi
+        fi
+
+        sleep 0.1
     done
 }
 
