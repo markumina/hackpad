@@ -50,7 +50,7 @@ monitor_keys() {
 # Thread for checking inactivity
 check_inactivity() {
     while true; do
-        # If touchpad is disabled, wait 1.1 seconds, then check the state
+        # If touchpad is disabled, wait some time, then check the state
         if [ -f "$TOUCHPAD_DEVICE" ] && [ "$(cat "$TOUCHPAD_DEVICE")" -eq 1 ]; then
             sleep 0.2
 
