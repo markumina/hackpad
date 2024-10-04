@@ -32,6 +32,10 @@ trap cleanup EXIT
 # Enable touchpad on script start
 enable_touchpad
 
+# Turn off disable-while-typing
+# - It sometimes causes the touchpad to freeze until finger is lifted and placed again
+su - markumina -c "gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing false"
+
 # Initialize the touched_while_in_delay state
 echo 0 > "$TOUCHED_FILE"
 
