@@ -1,6 +1,9 @@
 #!/bin/bash
 #set -x 
 
+# User name
+USER_NAME="markumina"
+
 # Path to the touchpad input device (see README.md to get yours)
 TOUCHPAD_DEVICE="/sys/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/input17/inhibited"
 
@@ -31,6 +34,10 @@ trap cleanup EXIT
 
 # Enable touchpad on script start
 enable_touchpad
+
+# Turn off disable-while-typing
+# - It sometimes causes the touchpad to freeze until finger is lifted and placed again
+su - "$USER_NAME" -c "gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing false"
 
 # Initialize the touched_while_in_delay state
 echo 0 > "$TOUCHED_FILE"
