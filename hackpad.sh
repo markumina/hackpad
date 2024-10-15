@@ -59,7 +59,7 @@ check_inactivity() {
     while true; do
         # If touchpad is disabled, wait some time, then check the state
         if [ -f "$TOUCHPAD_DEVICE" ] && [ "$(cat "$TOUCHPAD_DEVICE")" -eq 1 ]; then
-            sleep 0.16 # Main delay, post keypress.
+            sleep 0.20 # Main delay, post keypress.
 
             touched_while_in_delay=$(cat "$TOUCHED_FILE")  # Read the state from the file
             #echo "inactivity: $touched_while_in_delay"
