@@ -12,15 +12,13 @@ gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true
 
 After that, I tweaked every setting, switched from Wayland to X11 and tweaked all those settings - no great results.
 
-So I stuck together a little script that has helped a lot, for me. The commands in the script are what I settled on. There were other ways to disable the touchpad, namely:
+So I stuck together a little script that has helped a lot, for me. The debug-events based monitoring is what I settled on. There were other ways to disable the touchpad, namely:
 
 ```gsettings get org.gnome.desktop.peripherals.touchpad send-events 'enabled'```
 
-.. but it left the touchpad in an odd state where you had to lift your finger and put it back down again for it to start accepting motion. The method that I settled on in hackpad.sh does not have that issue.
+.. but it left the touchpad in an odd state where you had to lift your finger and put it back down again for it to start accepting motion - something seems broken. The debug-events monitor does not have that issue.
 
-After some adjustments, the logic works fine. I fixed the small fallthrough hole, and kept focus on reducing CPU load and making my computer usable for now..
-
-If you want to use this, you'll have to find your path to enabling/disabling your touchpad.
+The script consumes very little CPU, and works fine for me. If you want to use it, you'll have to find your path to enabling/disabling your touchpad.
 
 To do so:
 
@@ -50,12 +48,15 @@ So my path is:
 /devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/input17
 ```
 
-3. Take path above, with the prefix /sys/, and replace my path in hackpad.sh `TOUCHPAD_DEVICE`
+3. Take path above and:
+   a. Add prefix /sys/
+   b. Remove the input17 (or inputxx - whatever number it may be, it's dynamic so the script ignores it)
+   c. Place this path in hackpad.sh `TOUCHPAD_DEVICE`, making sure to keep: "/${TOUCHPAD_DEVICE}/inhibited" at the end
 
-For me that's:
+For me that results in:
 
 ```
-TOUCHPAD_DEVICE="/sys/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/input17/inhibited"
+TOUCHPAD_DEVICE="/sys/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/${TOUCHPAD_DEVICE}/inhibited"
 ```
 
 4. sudo vi /etc/systemd/system/hackpad.service
