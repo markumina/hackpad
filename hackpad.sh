@@ -4,8 +4,20 @@
 # User name
 USER_NAME="markumina"
 
-# Path to the touchpad input device (see README.md to get yours)
-TOUCHPAD_DEVICE="/sys/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/input17/inhibited"
+# Extract the input<number> path dynamically from /proc/bus/input/devices
+TOUCHPAD_DEVICE=$(cat /proc/bus/input/devices | grep -A10 -B1 ouch | grep -oP "input\d+" | head -n 1)
+
+# Check if the path was found
+if [ -z "$TOUCHPAD_DEVICE" ]; then
+    echo "Error: No touchpad device found in /proc/bus/input/devices."
+    exit 1
+fi
+
+# Define the full path to the "inhibited" file for the touchpad
+TOUCHPAD_DEVICE="/sys/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/${TOUCHPAD_DEVICE}/inhibited"
+
+# Dump it for debug
+echo "TOUCHPAD_DEVICE is set to: $TOUCHPAD_DEVICE"
 
 # Temporary file to store the state of touched_while_in_delay
 TOUCHED_FILE="/tmp/touched_while_in_delay.txt"
