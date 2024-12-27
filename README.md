@@ -11,7 +11,7 @@ GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i915.enable_psr=0"
 ```
 This shuts off Panel Self Refresh, which will increase power consumption a bit, but prevents screen glitching and periodic freezing.
 
-I dug through all the settings that I could find in Wayland. Enabling the following did help, but it only disables `mouse` movement while typing, it does not disable `click`. You can still accidentally click by having your palm tap the touchpad. It's annoying. Anyway this is the setting that helps a bit, but it doesn't disable the trackpad long enough after a keypress:
+I dug through all the settings that I could find in Wayland. Enabling the following did help, but it only disables `mouse` movement while typing, it does not disable `click`. You can still accidentally click by having your palm tap the touchpad. It's annoying. Anyway this is the setting that helps a bit, but it doesn't disable the trackpad long enough after a keypress. Leave this on (the script auto-sets it at startup) because it can prevent an issue where sometimes a finger needs to be lifted and placed again before the trackpad responds:
 ```
 gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true
 ```
