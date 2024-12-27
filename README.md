@@ -3,9 +3,13 @@
 
 I recently bought a Dell XPS13, and the touchpad has been giving me nightmares by clicking on random parts of my screen, or random places in an editor while I type.
 
-Tech support was surpringly helpful with the webcam, but not the touchpad.
+Tech support was surpringly helpful with the webcam, but not the touchpad, nor the display periodic freezing:
 
-I dug through all the settings that I could find in Wayland. Enabling the following did help, but it only disables `mouse` movement while typing, it does not disable `click`. You can still accidentally click by having your palm tap the touchpad. It's annoying. Anyway this is the setting that helps a bit:
+Tangent: To fix the display periodic freezing, update file '/etc/default/grub' to contain:
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i915.enable_psr=0"
+This shuts off Panel Self Refresh, which will increase power consumption a bit, but prevents screen glitching and periodic freezing.
+
+I dug through all the settings that I could find in Wayland. Enabling the following did help, but it only disables `mouse` movement while typing, it does not disable `click`. You can still accidentally click by having your palm tap the touchpad. It's annoying. Anyway this is the setting that helps a bit, but it doesn't disable the trackpad long enough after a keypress:
 ```
 gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true
 ```
