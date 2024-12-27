@@ -47,9 +47,9 @@ trap cleanup EXIT
 # Enable touchpad on script start
 enable_touchpad
 
-# Turn off disable-while-typing
-# - It sometimes causes the touchpad to freeze until finger is lifted and placed again
-su - "$USER_NAME" -c "gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing false"
+# Turn on disable-while-typing
+# - It can prevent an issue where the touchpad may freeze until finger is lifted and placed again
+su - "$USER_NAME" -c "gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true"
 
 # Initialize the touched_while_in_delay state
 echo 0 > "$TOUCHED_FILE"
