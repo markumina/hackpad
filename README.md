@@ -6,7 +6,7 @@ I recently bought a Dell XPS13, and the touchpad has been giving me nightmares b
 
 Tech support was surpringly helpful with the webcam, but not the touchpad, nor the display periodic freezing:
 
-Tangent: To fix the display periodic freezing, update file '/etc/default/grub' to contain:
+Tangent: To fix the display periodic freezing, update file `/etc/default/grub` to contain:
 ```
 GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i915.enable_psr=0"
 ```
