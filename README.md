@@ -99,17 +99,17 @@ Check that it restarted automatically on reboot by typing while attempting to us
 
 8. I've noticed that my cursor is choppy, which I've found can happen because of Intel's dynamic refresh rate. Make it constant (this will burn more juice!). 
 
-Force constant refresh by disabling saving features:
+   Force constant refresh by disabling saving features:
 
-A. `vi /etc/default/grub`
+   A. `vi /etc/default/grub`
 
-B. Find the line starting with GRUB_CMDLINE_LINUX_DEFAULT and add the following: `i915.enable_psr=0`, for me:
+   B. Find the line starting with GRUB_CMDLINE_LINUX_DEFAULT and add the following: `i915.enable_psr=0`, for me:
 
-     `GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i915.enable_psr=0"`
+        `GRUB_CMDLINE_LINUX_DEFAULT="quiet splash i915.enable_psr=0"`
 
-D. Save and run: `sudo update-grub`
+   D. Save and run: `sudo update-grub`
 
-E. Run `sudo reboot now`
+   E. Run `sudo reboot now`
 
 Hit me up: mark.umina at gmail dot com.
 
