@@ -51,6 +51,9 @@ enable_touchpad
 # - It can prevent an issue where the touchpad may freeze until finger is lifted and placed again
 su - "$USER_NAME" -c "gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true"
 
+# Turn off tap and drag, I've found it to be a pain with a sensitive touchpad
+su - "$USER_NAME" -c "gsettings set org.gnome.desktop.peripherals.touchpad tap-and-drag false"
+
 # Initialize the touched_while_in_delay state
 echo 0 > "$TOUCHED_FILE"
 
