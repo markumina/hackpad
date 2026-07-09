@@ -6,7 +6,7 @@ After=multi-user.target
 ExecStart=/opt/hackpad/hackpad.sh
 Restart=always
 User=root
+RuntimeDirectory=hackpad
 
 [Install]
 WantedBy=multi-user.target
-

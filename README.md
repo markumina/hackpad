@@ -25,71 +25,38 @@ So I stuck together a little script that has helped a lot, for me. The debug-eve
 
 .. but it left the touchpad in an odd state where you had to lift your finger and put it back down again for it to start accepting motion - something seems broken. The debug-events monitor does not have that issue.
 
-The script consumes very little CPU, and works fine for me. If you want to use it, you'll have to find your path to enabling/disabling your touchpad.
+The script consumes very little CPU, and works fine for me. It discovers the touchpad from `/proc/bus/input/devices`, then inhibits it through `/sys/class/input/inputN/inhibited`, so there is no Dell-specific sysfs path to paste into the script.
 
-To do so:
-
-1. Search the device list for Touch or Touchpad or 'ouch':
-```
-cat /proc/bus/input/devices | grep -A10 -B1 ouch
-```
-
-Example output:
+## Build a deb
 
 ```
-markumina@markxps:~/Documents/hackpad$ cat /proc/bus/input/devices | grep -A10 -B1 ouch
-I: Bus=0018 Vendor=0488 Product=1072 Version=0100
-N: Name="VEN_0488:00 0488:1072 Touchpad"
-P: Phys=i2c-VEN_0488:00
-S: Sysfs=/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/input17
-U: Uniq=
-H: Handlers=mouse2 event7 
-B: PROP=5
-B: EV=1b
-B: KEY=e520 10000 0 0 0 0
-B: ABS=2e0800000000003
-B: MSC=20
-```
-So my path is:
-```
-/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/input17
+./build-deb.sh
 ```
 
-3. Take path above and:
-   a. Add prefix /sys/
-   b. Remove the input17 (or inputxx - whatever number it may be, it's dynamic so the script ignores it)
-   c. Place this path in hackpad.sh `TOUCHPAD_DEVICE`, making sure to keep: "/${TOUCHPAD_DEVICE}/inhibited" at the end
-
-For me that results in:
+That creates:
 
 ```
-TOUCHPAD_DEVICE="/sys/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/${TOUCHPAD_DEVICE}/inhibited"
+dist/hackpad_0.1.0_all.deb
 ```
 
-4. sudo vi /etc/systemd/system/hackpad.service
-
-5. Paste contents below:
-```
-[Unit]
-Description=Hackpad Touchpad Management Script
-
-[Service]
-ExecStart=/opt/hackpad/hackpad.sh
-Restart=always
-RestartSec=5  # Optional: time to wait before restarting (in seconds)
-
-[Install]
-WantedBy=multi-user.target
-```
-
-6. Place your hackpad.sh file in /opt/hackpad.sh
-
-7. Enable the service and reload:
+Install it with:
 
 ```
-sudo systemctl daemon-reload
-sudo systemctl enable hackpad.service
-sudo systemctl start hackpad.service
+sudo apt install ./dist/hackpad_0.1.0_all.deb
+```
+
+The package installs:
+
+```
+/opt/hackpad/hackpad.sh
+/etc/systemd/system/hackpad.service
+```
+
+The package post-install step reloads systemd, enables `hackpad.service`, and restarts it.
+
+Check status with:
+
+```
 systemctl status hackpad.service
 ```
 Check that it restarted automatically on reboot by typing while attempting to use the trackpad.
@@ -112,5 +79,4 @@ Check that it restarted automatically on reboot by typing while attempting to us
    E. Run `sudo reboot now`
 
 Hit me up: mark.umina at gmail dot com.
-
 

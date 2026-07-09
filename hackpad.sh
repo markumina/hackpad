@@ -5,7 +5,15 @@
 USER_NAME="markumina"
 
 # Extract the input<number> path dynamically from /proc/bus/input/devices
-TOUCHPAD_DEVICE=$(cat /proc/bus/input/devices | grep -A10 -B1 ouch | grep -oP "input\d+" | head -n 1)
+TOUCHPAD_DEVICE=$(awk '
+    /^N: Name=/ && tolower($0) ~ /touchpad/ { in_touchpad = 1; next }
+    in_touchpad && /^S: Sysfs=/ {
+        sub(/^S: Sysfs=.*\/input\//, "")
+        print
+        exit
+    }
+    /^$/ { in_touchpad = 0 }
+' /proc/bus/input/devices)
 
 # Check if the path was found
 if [ -z "$TOUCHPAD_DEVICE" ]; then
@@ -14,13 +22,20 @@ if [ -z "$TOUCHPAD_DEVICE" ]; then
 fi
 
 # Define the full path to the "inhibited" file for the touchpad
-TOUCHPAD_DEVICE="/sys/devices/pci0000:00/0000:00:15.2/i2c_designware.1/i2c-2/i2c-VEN_0488:00/0018:0488:1072.0002/input/${TOUCHPAD_DEVICE}/inhibited"
+TOUCHPAD_DEVICE="/sys/class/input/${TOUCHPAD_DEVICE}/inhibited"
+
+if [ ! -f "$TOUCHPAD_DEVICE" ]; then
+    echo "Error: Touchpad inhibited path not found: $TOUCHPAD_DEVICE"
+    exit 1
+fi
 
 # Dump it for debug
 echo "TOUCHPAD_DEVICE is set to: $TOUCHPAD_DEVICE"
 
-# Temporary file to store the state of touched_while_in_delay
-TOUCHED_FILE="/tmp/touched_while_in_delay.txt"
+# Runtime file to store the state of touched_while_in_delay
+RUNTIME_DIR="${RUNTIME_DIRECTORY:-/run/hackpad}"
+mkdir -p "$RUNTIME_DIR"
+TOUCHED_FILE="$RUNTIME_DIR/touched_while_in_delay"
 
 # Function to disable the touchpad
 disable_touchpad() {
